@@ -1,0 +1,47 @@
+# Plugin snap for the snap-based Certbot. Not in the Snap Store: the .snap is attached to each GitHub release
+# (or built locally with `snapcraft pack`) and installed with `snap install --dangerous`.
+name: certbot-dns-tropicalspace
+summary: Certbot DNS Plugin for tropicalspace.de
+description: |
+  certbot-dns-tropicalspace is a plugin for Certbot to perform dns-01
+  challenges against the tropicalspace.de developer API
+base: core24
+confinement: strict
+grade: stable
+adopt-info: certbot-dns-tropicalspace
+platforms:
+  amd64:
+  arm64:
+  armhf:
+
+parts:
+  certbot-dns-tropicalspace:
+    plugin: python
+    source: .
+    override-pull: |
+        craftctl default
+        craftctl set version=$(grep '^version' "$SNAPCRAFT_PART_SRC/setup.py" | cut -f2 -d= | tr -d '"[:space:]"')
+    build-environment:
+      - SNAP_BUILD: "True"
+    # To build cryptography and cffi if needed
+    build-packages: [gcc, libffi-dev, libssl-dev, python3-dev]
+  certbot-metadata:
+    plugin: dump
+    source: .
+    stage: [setup.py, certbot-shared]
+    override-pull: |
+        craftctl default
+        mkdir -p $SNAPCRAFT_PART_SRC/certbot-shared
+
+slots:
+  certbot:
+    interface: content
+    content: certbot-1
+    read:
+      - $SNAP/lib/python3.12/site-packages
+
+plugs:
+  certbot-metadata:
+    interface: content
+    content: metadata-1
+    target: $SNAP/certbot-shared

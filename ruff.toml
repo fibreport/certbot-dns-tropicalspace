@@ -1,0 +1,23 @@
+# PEP 8: code lines up to 79 characters, comments and docstrings up to 72
+line-length = 79
+indent-width = 4
+target-version = "py39"
+exclude = [".venv", "venv", ".git", "build", "dist"]
+
+[lint]
+select = ["F", "E", "W", "N", "A", "C4", "RET", "T20", "Q", "RSE", "ERA", "C90", "UP", "B", "I"]
+ignore = ["UP006", "UP007", "UP035", "UP045"]
+
+[lint.pycodestyle]
+max-line-length = 79
+max-doc-length = 72
+
+[lint.isort]
+force-single-line = true
+
+[lint.mccabe]
+max-complexity = 15
+
+[format]
+quote-style = "double"
+indent-style = "space"
